@@ -35,13 +35,17 @@
       <a-assets></a-assets>
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- 21 targets linked manually -->
-      <a-entity mindar-image-target="targetIndex: 0">
+      <!-- Fixed: model1 -->
+      <a-entity mindar-image-target="targetIndex: 0; smooth: true; smoothCount: 10; smoothTolerance: 0.01; smoothThreshold: 2; missTolerance: 0">
         <a-gltf-model src="model1.glb" position="0 0 0" scale="1 1 1"></a-gltf-model>
       </a-entity>
-      <a-entity mindar-image-target="targetIndex: 1">
+
+      <!-- Fixed: model2 -->
+      <a-entity mindar-image-target="targetIndex: 1; smooth: true; smoothCount: 10; smoothTolerance: 0.01; smoothThreshold: 2; missTolerance: 0">
         <a-gltf-model src="model2.glb" position="0 0 0" scale="1 1 1"></a-gltf-model>
       </a-entity>
+
+      <!-- Untouched: model3 to model21 -->
       <a-entity mindar-image-target="targetIndex: 2">
         <a-gltf-model src="model3.glb" position="0 0 0" scale="1 1 1"></a-gltf-model>
       </a-entity>
@@ -99,7 +103,7 @@
       <a-entity mindar-image-target="targetIndex: 20">
         <a-gltf-model src="model21.glb" position="0 0 0" scale="1 1 1"></a-gltf-model>
       </a-entity>
-
+      
     </a-scene>
   </body>
 </html>
