@@ -1,125 +1,105 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>AR Test - Model 1 Only</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
-    <style>
-      html, body {
-        margin: 0; padding: 0;
-        width: 100%; height: 100%;
-        overflow: hidden;
-        font-family: sans-serif;
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MindAR Minimal Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
+      background: black;
+    }
+    a-scene {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      z-index: 0;
+    }
+    #bottom-bar {
+      position: fixed;
+      bottom: 20px; /* raised above browser UI */
+      left: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0;
+      z-index: 1000;
+      user-select: none;
+    }
+    #viewer-button {
+      width: 36px;
+      height: 36px;
+      background: red;
+      border-radius: 50%;
+      border: 2px solid white;
+      margin-left: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <a-scene
+    mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: true"
+  >
+    <a-assets></a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0; missTolerance: 0">
+      <a-gltf-model
+        src="model1.glb"
+        position="0 0.05 0"
+        rotation="0 0 0"
+        scale="1 1 1"
+        visible="false"
+      ></a-gltf-model>
+    </a-entity>
+  </a-scene>
+
+  <div id="bottom-bar">
+    <span>Para una visualización 3D más completa, pulsa el botón.</span>
+    <div id="viewer-button" title="Ver modelo 3D"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sceneEl = document.querySelector("a-scene");
+      const modelEntity = document.querySelector("a-gltf-model");
+      const viewerButton = document.getElementById("viewer-button");
+
+      if (sceneEl && modelEntity) {
+        sceneEl.addEventListener("targetFound", (event) => {
+          if (event.detail.index === 0) {
+            modelEntity.setAttribute("visible", "true");
+          }
+        });
+
+        sceneEl.addEventListener("targetLost", (event) => {
+          if (event.detail.index === 0) {
+            modelEntity.setAttribute("visible", "false");
+          }
+        });
+
+        viewerButton.addEventListener("click", () => {
+          window.open("viewer.html?model=model1.glb", "_blank");
+        });
       }
-      a-scene {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        z-index: 0;
-      }
-      /* Hide cursor on mobile to avoid visual clutter */
-      #ui-cursor {
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <a-scene
-      mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      embedded
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: true"
-    >
-      <a-assets></a-assets>
+    });
+  </script>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-      <a-entity mindar-image-target="targetIndex: 0; missTolerance: 0">
-        <a-gltf-model
-          src="model1.glb"
-          position="0 0.05 0"
-          rotation="0 0 0"
-          scale="1 1 1"
-          visible="false"
-        ></a-gltf-model>
-      </a-entity>
-
-      <!-- Bottom bar as a flat plane fixed in front of camera -->
-      <a-entity
-        id="bottom-bar"
-        geometry="primitive: plane; height: 0.12; width: 1.6"
-        material="color: black; opacity: 0.8"
-        position="0 -0.85 -1.5"
-        visible="true"
-      >
-        <!-- Text -->
-        <a-text
-          id="bar-text"
-          value="Para una visualización 3D más completa, pulsa el botón."
-          color="white"
-          align="left"
-          width="1.4"
-          position="-0.75 0 0.01"
-          font="https://cdn.aframe.io/fonts/mozillavr.fnt"
-          wrap-count="40"
-        ></a-text>
-
-        <!-- Red circular button -->
-        <a-circle
-          id="viewer-button"
-          radius="0.06"
-          color="red"
-          position="0.7 0 0.02"
-          stroke="white"
-          stroke-width="0.01"
-          cursor-listener
-        ></a-circle>
-      </a-entity>
-
-      <!-- Cursor for desktop interaction -->
-      <a-entity
-        id="ui-cursor"
-        cursor="fuse: false; rayOrigin: mouse"
-        raycaster="objects: #viewer-button"
-      ></a-entity>
-    </a-scene>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const sceneEl = document.querySelector("a-scene");
-        const modelEntity = document.querySelector("a-gltf-model");
-        const viewerButton = document.querySelector("#viewer-button");
-
-        let currentTargetIndex = null;
-
-        if (sceneEl && modelEntity) {
-          sceneEl.addEventListener("targetFound", (event) => {
-            currentTargetIndex = event.detail.index;
-            if (currentTargetIndex === 0) {
-              modelEntity.setAttribute("visible", "true");
-            }
-          });
-
-          sceneEl.addEventListener("targetLost", (event) => {
-            if (event.detail.index === currentTargetIndex) {
-              modelEntity.setAttribute("visible", "false");
-              currentTargetIndex = null;
-            }
-          });
-
-          // Add click listener on the button
-          viewerButton.addEventListener("click", () => {
-            if (currentTargetIndex !== null) {
-              const modelName = `model${currentTargetIndex + 1}.glb`;
-              window.open(`viewer.html?model=${modelName}`, "_blank");
-            }
-          });
-        }
-      });
-    </script>
-  </body>
+</body>
 </html>
