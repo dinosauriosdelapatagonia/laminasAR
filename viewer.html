@@ -20,7 +20,6 @@
         width: 100vw;
         height: 100vh;
         background: transparent;
-        /* We'll control spin via transform */
       }
 
       #close-btn {
@@ -52,6 +51,7 @@
       id="viewer"
       src=""
       camera-controls
+      auto-rotate
       disable-pan="false"
       ar
       shadow-intensity="1"
@@ -62,30 +62,7 @@
     <script>
       const urlParams = new URLSearchParams(window.location.search);
       const modelName = urlParams.get("model") || "model1.glb";
-      const viewer = document.getElementById("viewer");
-      viewer.setAttribute("src", modelName);
-
-      // Initially disable auto-rotate
-      viewer.removeAttribute("auto-rotate");
-
-      let startTime = null;
-      const duration = 1000; // 1 second for quick spin
-      function spin(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        if (elapsed < duration) {
-          // Spin about 3 full turns (1080 deg) over 1 second
-          const rotationY = (elapsed / duration) * 1080;
-          viewer.style.transform = `rotateY(${rotationY}deg)`;
-          requestAnimationFrame(spin);
-        } else {
-          // Clear CSS transform and enable slow auto-rotate
-          viewer.style.transform = "";
-          viewer.setAttribute("auto-rotate", "");
-        }
-      }
-
-      requestAnimationFrame(spin);
+      document.getElementById("viewer").setAttribute("src", modelName);
     </script>
   </body>
 </html>
