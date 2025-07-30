@@ -15,29 +15,35 @@
         overflow: hidden;
         font-family: sans-serif;
       }
+
       a-scene {
         position: absolute;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
+        z-index: 0;
       }
+
       #bottom-bar {
         position: fixed;
         bottom: 0;
         width: 100%;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.85);
         color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 10px 16px;
         z-index: 10;
+        pointer-events: auto;
       }
+
       #bar-text {
         font-size: 14px;
         flex: 1;
       }
+
       #viewer-button {
         width: 36px;
         height: 36px;
@@ -46,10 +52,12 @@
         border: 2px solid white;
         cursor: pointer;
         margin-left: 12px;
+        flex-shrink: 0;
       }
     </style>
   </head>
   <body>
+    <!-- AR Scene -->
     <a-scene
       mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
       color-space="sRGB"
@@ -73,6 +81,7 @@
       </a-entity>
     </a-scene>
 
+    <!-- Bottom Bar UI -->
     <div id="bottom-bar">
       <span id="bar-text">Para una visualización 3D más completa, pulsa el botón.</span>
       <div id="viewer-button" title="Ver modelo 3D"></div>
