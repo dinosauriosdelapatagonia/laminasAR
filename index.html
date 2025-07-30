@@ -2,24 +2,21 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>AR Test - Model 1 Only</title>
+    <title>AR Test - Models 1 & 8 with Y-Axis Drag Rotation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://unpkg.com/aframe-gesture-detector/dist/aframe-gesture-detector.min.js"></script>
     <style>
       html, body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
+        margin: 0; padding: 0;
+        width: 100%; height: 100%;
         overflow: hidden;
       }
       a-scene {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
       }
     </style>
   </head>
@@ -36,35 +33,104 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity mindar-image-target="targetIndex: 0; missTolerance: 0">
+      <!-- Model 1 with Y-axis drag rotation -->
+      <a-entity
+        id="modelContainer1"
+        mindar-image-target="targetIndex: 0; missTolerance: 0"
+        visible="false"
+        gesture-detector
+      >
         <a-gltf-model
+          id="model1"
           src="model1.glb"
+          position="0 0.05 0"
+          rotation="0 0 0"
+          scale="1 1 1"
+        ></a-gltf-model>
+      </a-entity>
+
+      <!-- Model 8 with Y-axis drag rotation -->
+      <a-entity
+        id="modelContainer8"
+        mindar-image-target="targetIndex: 7; missTolerance: 0"
+        visible="false"
+        gesture-detector
+      >
+        <a-gltf-model
+          id="model8"
+          src="model8.glb"
+          position="0 0.05 0"
+          rotation="0 0 0"
+          scale="1 1 1"
+        ></a-gltf-model>
+      </a-entity>
+
+      <!-- Add other models without drag rotation below (example model 2) -->
+      <a-entity mindar-image-target="targetIndex: 1; missTolerance: 0">
+        <a-gltf-model
+          src="model2.glb"
           position="0 0.05 0"
           rotation="0 0 0"
           scale="1 1 1"
           visible="false"
         ></a-gltf-model>
       </a-entity>
+      <!-- Repeat for other models 3-21 without gesture-detector or drag-rotate-y -->
+
     </a-scene>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const sceneEl = document.querySelector("a-scene");
-        const modelEntity = document.querySelector("a-gltf-model");
-
-        if (sceneEl && modelEntity) {
-          sceneEl.addEventListener("targetFound", (event) => {
-            if (event.detail.index === 0) {
-              modelEntity.setAttribute("visible", "true");
+      // Component to rotate only on Y axis based on horizontal drag
+      AFRAME.registerComponent('drag-rotate-y', {
+        schema: { speed: { type: 'number', default: 0.5 } },
+        init: function () {
+          this.previousX = null;
+          this.el.sceneEl.addEventListener('drag', (event) => {
+            if (this.previousX !== null) {
+              let deltaX = event.detail.position.x - this.previousX;
+              let rotation = this.el.getAttribute('rotation');
+              rotation.y += deltaX * this.data.speed * 10;
+              if (rotation.y > 360) rotation.y -= 360;
+              if (rotation.y < 0) rotation.y += 360;
+              this.el.setAttribute('rotation', rotation);
             }
+            this.previousX = event.detail.position.x;
           });
-
-          sceneEl.addEventListener("targetLost", (event) => {
-            if (event.detail.index === 0) {
-              modelEntity.setAttribute("visible", "false");
-            }
+          this.el.sceneEl.addEventListener('dragend', () => {
+            this.previousX = null;
           });
         }
+      });
+
+      // Attach the drag-rotate-y component to model containers 1 and 8
+      document.querySelector('#modelContainer1').setAttribute('drag-rotate-y', '');
+      document.querySelector('#modelContainer8').setAttribute('drag-rotate-y', '');
+
+      // Show/hide models on target found/lost
+      document.addEventListener('DOMContentLoaded', () => {
+        const sceneEl = document.querySelector('a-scene');
+
+        sceneEl.addEventListener('targetFound', (event) => {
+          const targetIndex = event.detail.index;
+          if (targetIndex === 0) {
+            document.querySelector('#modelContainer1').setAttribute('visible', 'true');
+          } else if (targetIndex === 7) {
+            document.querySelector('#modelContainer8').setAttribute('visible', 'true');
+          } else {
+            // Handle other models below if needed
+          }
+        });
+
+        sceneEl.addEventListener('targetLost', (event) => {
+          const targetIndex = event.detail.index;
+          if (targetIndex === 0) {
+            document.querySelector('#modelContainer1').setAttribute('visible', 'false');
+          } else if (targetIndex === 7) {
+            document.querySelector('#modelContainer8').setAttribute('visible', 'false');
+          } else {
+            // Handle other models below if needed
+          }
+        });
       });
     </script>
   </body>
