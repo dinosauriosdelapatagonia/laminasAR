@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>MindAR Minimal Test</title>
+  <title>MindAR Dino AR</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
@@ -13,25 +13,27 @@
       overflow: hidden;
       font-family: sans-serif;
       background: black;
+      touch-action: none;
     }
     a-scene {
+      position: absolute;
+      top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      position: relative;
       z-index: 0;
     }
     #bottom-bar {
       position: fixed;
-      bottom: 20px; /* raised above browser UI */
+      bottom: 20px;
       left: 0;
       width: 100%;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0, 0, 0, 0.85);
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 8px 0;
-      z-index: 1000;
+      z-index: 9999;
       user-select: none;
     }
     #viewer-button {
@@ -48,7 +50,9 @@
 </head>
 <body>
 
+  <!-- A-Frame Scene -->
   <a-scene
+    embedded
     mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
     color-space="sRGB"
     renderer="colorManagement: true, physicallyCorrectLights"
@@ -70,34 +74,49 @@
     </a-entity>
   </a-scene>
 
+  <!-- UI Overlay -->
   <div id="bottom-bar">
     <span>Para una visualización 3D más completa, pulsa el botón.</span>
     <div id="viewer-button" title="Ver modelo 3D"></div>
   </div>
 
+  <!-- Script -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const sceneEl = document.querySelector("a-scene");
       const modelEntity = document.querySelector("a-gltf-model");
       const viewerButton = document.getElementById("viewer-button");
 
-      if (sceneEl && modelEntity) {
-        sceneEl.addEventListener("targetFound", (event) => {
-          if (event.detail.index === 0) {
-            modelEntity.setAttribute("visible", "true");
-          }
-        });
+      let currentTarget = null;
 
-        sceneEl.addEventListener("targetLost", (event) => {
-          if (event.detail.index === 0) {
-            modelEntity.setAttribute("visible", "false");
-          }
-        });
+      sceneEl.addEventListener("targetFound", (event) => {
+        const index = event.detail.index;
+        currentTarget = index;
 
-        viewerButton.addEventListener("click", () => {
-          window.open("viewer.html?model=model1.glb", "_blank");
-        });
-      }
+        if (index === 0) {
+          modelEntity.setAttribute("visible", "true");
+        }
+
+        // Future expansion: add visibility logic for more models here
+      });
+
+      sceneEl.addEventListener("targetLost", (event) => {
+        const index = event.detail.index;
+
+        if (index === 0) {
+          modelEntity.setAttribute("visible", "false");
+        }
+
+        currentTarget = null;
+      });
+
+      viewerButton.addEventListener("click", () => {
+        if (currentTarget !== null) {
+          const modelName = `model${currentTarget + 1}.glb`;
+          const viewerUrl = `viewer.html?model=${modelName}`;
+          window.open(viewerUrl, "_blank");
+        }
+      });
     });
   </script>
 
