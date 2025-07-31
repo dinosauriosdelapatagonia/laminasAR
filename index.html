@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>AR Test - All 21 Models</title>
+    <title>AR Test - Model 1 Only</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
@@ -33,52 +33,18 @@
       device-orientation-permission-ui="enabled: true"
     >
       <a-assets></a-assets>
+
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- All 21 target entities -->
-      <!-- Just copy/pasted your same structure 21 times -->
-      <!-- Each with different targetIndex and GLB file -->
+      <a-entity mindar-image-target="targetIndex: 0; missTolerance: 0">
+        <a-gltf-model
+          src="model1.glb"
+          position="0 0.05 0"
+          rotation="0 0 0"
+          scale="1 1 1"
+        ></a-gltf-model>
+      </a-entity>
 
-      <!-- Targets 0 to 20 = model1.glb to model21.glb -->
-      <!-- Remember index is 0-based, filenames are 1-based -->
-
-      ${[...Array(21)].map((_, i) => `
-        <a-entity mindar-image-target="targetIndex: ${i}; missTolerance: 0">
-          <a-gltf-model
-            src="model${i + 1}.glb"
-            position="0 0.05 0"
-            rotation="0 0 0"
-            scale="1 1 1"
-            visible="false"
-          ></a-gltf-model>
-        </a-entity>
-      `).join('')}
     </a-scene>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const sceneEl = document.querySelector("a-scene");
-
-        // For each targetIndex from 0 to 20
-        for (let i = 0; i < 21; i++) {
-          const targetSelector = \`a-entity[mindar-image-target="targetIndex: \${i}; missTolerance: 0"] a-gltf-model\`;
-          const modelEntity = document.querySelector(targetSelector);
-
-          if (modelEntity) {
-            sceneEl.addEventListener("targetFound", (event) => {
-              if (event.detail.index === i) {
-                modelEntity.setAttribute("visible", "true");
-              }
-            });
-
-            sceneEl.addEventListener("targetLost", (event) => {
-              if (event.detail.index === i) {
-                modelEntity.setAttribute("visible", "false");
-              }
-            });
-          }
-        }
-      });
-    </script>
   </body>
 </html>
