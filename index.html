@@ -42,30 +42,9 @@
           position="0 0.05 0"
           rotation="0 0 0"
           scale="1 1 1"
-          visible="false"
         ></a-gltf-model>
       </a-entity>
+
     </a-scene>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const sceneEl = document.querySelector("a-scene");
-        const modelEntity = document.querySelector("a-gltf-model");
-
-        if (sceneEl && modelEntity) {
-          sceneEl.addEventListener("targetFound", (event) => {
-            if (event.detail.index === 0) {
-              modelEntity.setAttribute("visible", "true");
-            }
-          });
-
-          sceneEl.addEventListener("targetLost", (event) => {
-            if (event.detail.index === 0) {
-              modelEntity.setAttribute("visible", "false");
-            }
-          });
-        }
-      });
-    </script>
   </body>
 </html>
