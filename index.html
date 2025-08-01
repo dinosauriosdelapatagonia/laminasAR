@@ -12,7 +12,7 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden;
+        overflow: visible; /* Changed from hidden to prevent clipping */
       }
       a-scene {
         position: absolute;
@@ -20,10 +20,21 @@
         left: 0;
         width: 100vw;
         height: 100vh;
+        z-index: 1; /* Ensure scene is below button */
       }
-      /* Style for the button to ensure it stays on top of the AR scene */
-      #arButton {
+      /* Container for button to isolate it */
+      #buttonContainer {
         position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10000; /* Extremely high z-index */
+        pointer-events: none; /* Allow clicks to pass through except for button */
+      }
+      /* Style for the button */
+      #arButton {
+        position: absolute;
         bottom: 20px;
         right: 20px;
         padding: 15px 25px;
@@ -33,9 +44,10 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        z-index: 1000; /* High z-index to stay above A-Frame/MindAR canvas */
+        z-index: 10001; /* Higher than container */
         opacity: 0.9;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        pointer-events: auto; /* Ensure button is clickable */
       }
       #arButton:hover {
         background-color: #0056b3;
@@ -43,8 +55,10 @@
     </style>
   </head>
   <body>
-    <!-- Button overlay -->
-    <button id="arButton">Open Window</button>
+    <!-- Button container -->
+    <div id="buttonContainer">
+      <button id="arButton">Open Window</button>
+    </div>
 
     <a-scene
       mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
@@ -112,7 +126,7 @@
       <a-entity mindar-image-target="targetIndex: 17; missTolerance: 0">
         <a-gltf-model src="model18.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
-      <a-entity mindar-image-target="targetIndex: 18; missTolerance: 0">
+      <a-entity mindar-image-target="targetIndex: 18; minTolerance: 0">
         <a-gltf-model src="model19.glb" position="0 0.05 0" rotation="0 0 0" scale="0.95 0.95 0.95"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 19; missTolerance: 0">
@@ -124,9 +138,24 @@
     </a-scene>
 
     <script>
-      // Button interaction (for testing; will add link later)
-      document.getElementById("arButton").addEventListener("click", () => {
-        alert("Button clicked! Ready to add link functionality.");
+      // Ensure button remains visible after MindAR initializes
+      document.addEventListener("DOMContentLoaded", () => {
+        const button = document.getElementById("arButton");
+        button.style.display = "block"; // Ensure button is visible
+        button.addEventListener("click", () => {
+          alert("Button clicked! Ready to add link functionality.");
+        });
+      });
+
+      // Re-ensure button visibility after MindAR starts
+      AFRAME.registerComponent("mindar-button-fix", {
+        init: function () {
+          const button = document.getElementById("arButton");
+          setTimeout(() => {
+            button.style.visibility = "visible";
+            button.style.zIndex = "10001";
+          }, 1000); // Delay to ensure MindAR canvas is loaded
+        },
       });
     </script>
   </body>
