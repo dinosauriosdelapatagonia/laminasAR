@@ -14,13 +14,16 @@
         height: 100%;
         overflow: hidden;
         font-family: sans-serif;
+        background: black;
       }
       a-scene {
-        position: absolute;
+        position: absolute !important;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
+        z-index: 1;
+        pointer-events: none;
       }
       #ui-bar {
         position: fixed;
@@ -33,7 +36,8 @@
         justify-content: space-between;
         padding: 10px 20px;
         box-sizing: border-box;
-        z-index: 10;
+        z-index: 9999;
+        pointer-events: auto;
       }
       #ui-text {
         font-size: 14px;
@@ -70,75 +74,76 @@
       <a-assets></a-assets>
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- 21 Targets -->
+      <!-- 21 AR targets -->
       <a-entity mindar-image-target="targetIndex: 0; missTolerance: 0">
-        <a-gltf-model src="model1.glb" position="0 0.05 0" scale="1 1 1"></a-gltf-model>
+        <a-gltf-model src="model1.glb" position="0 0.05 0" rotation="0 0 0" scale="1 1 1"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 1; missTolerance: 0">
-        <a-gltf-model src="model2.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model2.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 2; missTolerance: 0">
-        <a-gltf-model src="model3.glb" position="0 0.05 0" scale="0.85 0.85 0.85"></a-gltf-model>
+        <a-gltf-model src="model3.glb" position="0 0.05 0" rotation="0 0 0" scale="0.85 0.85 0.85"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 3; missTolerance: 0">
-        <a-gltf-model src="model4.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model4.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 4; missTolerance: 0">
-        <a-gltf-model src="model5.glb" position="0 0.05 0" scale="0.85 0.85 0.85"></a-gltf-model>
+        <a-gltf-model src="model5.glb" position="0 0.05 0" rotation="0 0 0" scale="0.85 0.85 0.85"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 5; missTolerance: 0">
-        <a-gltf-model src="model6.glb" position="0 0.05 0" scale="0.95 0.95 0.95"></a-gltf-model>
+        <a-gltf-model src="model6.glb" position="0 0.05 0" rotation="0 0 0" scale="0.95 0.95 0.95"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 6; missTolerance: 0">
-        <a-gltf-model src="model7.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model7.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 7; missTolerance: 0">
-        <a-gltf-model src="model8.glb" position="0 0.05 0" scale="0.85 0.85 0.85"></a-gltf-model>
+        <a-gltf-model src="model8.glb" position="0 0.05 0" rotation="0 0 0" scale="0.85 0.85 0.85"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 8; missTolerance: 0">
-        <a-gltf-model src="model9.glb" position="0 0.05 0" scale="0.95 0.95 0.95"></a-gltf-model>
+        <a-gltf-model src="model9.glb" position="0 0.05 0" rotation="0 0 0" scale="0.95 0.95 0.95"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 9; missTolerance: 0">
-        <a-gltf-model src="model10.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model10.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 10; missTolerance: 0">
-        <a-gltf-model src="model11.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model11.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 11; missTolerance: 0">
-        <a-gltf-model src="model12.glb" position="0 0.05 0" scale="0.95 0.95 0.95"></a-gltf-model>
+        <a-gltf-model src="model12.glb" position="0 0.05 0" rotation="0 0 0" scale="0.95 0.95 0.95"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 12; missTolerance: 0">
-        <a-gltf-model src="model13.glb" position="0 0.05 0" scale="1 1 1"></a-gltf-model>
+        <a-gltf-model src="model13.glb" position="0 0.05 0" rotation="0 0 0" scale="1 1 1"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 13; missTolerance: 0">
-        <a-gltf-model src="model14.glb" position="0 0.05 0" scale="0.85 0.85 0.85"></a-gltf-model>
+        <a-gltf-model src="model14.glb" position="0 0.05 0" rotation="0 0 0" scale="0.85 0.85 0.85"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 14; missTolerance: 0">
-        <a-gltf-model src="model15.glb" position="0 0.05 0" scale="0.95 0.95 0.95"></a-gltf-model>
+        <a-gltf-model src="model15.glb" position="0 0.05 0" rotation="0 0 0" scale="0.95 0.95 0.95"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 15; missTolerance: 0">
-        <a-gltf-model src="model16.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model16.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 16; missTolerance: 0">
-        <a-gltf-model src="model17.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model17.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 17; missTolerance: 0">
-        <a-gltf-model src="model18.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model18.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 18; missTolerance: 0">
-        <a-gltf-model src="model19.glb" position="0 0.05 0" scale="0.95 0.95 0.95"></a-gltf-model>
+        <a-gltf-model src="model19.glb" position="0 0.05 0" rotation="0 0 0" scale="0.95 0.95 0.95"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 19; missTolerance: 0">
-        <a-gltf-model src="model20.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model20.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
       <a-entity mindar-image-target="targetIndex: 20; missTolerance: 0">
-        <a-gltf-model src="model21.glb" position="0 0.05 0" scale="0.9 0.9 0.9"></a-gltf-model>
+        <a-gltf-model src="model21.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
 
     </a-scene>
 
     <script>
       const viewerLink = document.getElementById("viewer-link");
+
       AFRAME.scenes[0].addEventListener("targetFound", (e) => {
         const targetIndex = e.detail.targetIndex;
         const modelFile = `model${targetIndex + 1}.glb`;
