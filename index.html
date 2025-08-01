@@ -21,9 +21,31 @@
         width: 100vw;
         height: 100vh;
       }
+      /* Style for the button to ensure it stays on top of the AR scene */
+      #arButton {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000; /* High z-index to stay above A-Frame/MindAR canvas */
+        opacity: 0.9;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+      #arButton:hover {
+        background-color: #0056b3;
+      }
     </style>
   </head>
   <body>
+    <!-- Button overlay -->
+    <button id="arButton">Open Window</button>
+
     <a-scene
       mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
       color-space="sRGB"
@@ -99,7 +121,13 @@
       <a-entity mindar-image-target="targetIndex: 20; missTolerance: 0">
         <a-gltf-model src="model21.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
-
     </a-scene>
+
+    <script>
+      // Button interaction (for testing; will add link later)
+      document.getElementById("arButton").addEventListener("click", () => {
+        alert("Button clicked! Ready to add link functionality.");
+      });
+    </script>
   </body>
 </html>
