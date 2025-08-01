@@ -22,8 +22,7 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        z-index: 1;
-        pointer-events: none;
+        /* no z-index here */
       }
       #ui-bar {
         position: fixed;
@@ -142,8 +141,20 @@
     </a-scene>
 
     <script>
-      const viewerLink = document.getElementById("viewer-link");
+      // Fix UI layering by styling the internal WebGL canvas MindAR creates:
+      AFRAME.scenes[0].addEventListener("renderstart", () => {
+        const canvas = AFRAME.scenes[0].renderer.domElement;
+        if (canvas) {
+          canvas.style.position = "absolute";
+          canvas.style.top = "0";
+          canvas.style.left = "0";
+          canvas.style.zIndex = "1";
+          canvas.style.pointerEvents = "none";
+        }
+      });
 
+      // Update viewer button link on target found
+      const viewerLink = document.getElementById("viewer-link");
       AFRAME.scenes[0].addEventListener("targetFound", (e) => {
         const targetIndex = e.detail.targetIndex;
         const modelFile = `model${targetIndex + 1}.glb`;
