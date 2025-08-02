@@ -12,7 +12,7 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow: visible; /* Prevent clipping */
+        overflow: visible;
       }
       a-scene {
         position: absolute;
@@ -20,19 +20,20 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        z-index: 1; /* Keep scene below button */
+        z-index: 0;
       }
-      /* Container for button */
+      canvas {
+        z-index: 0 !important;
+      }
       #buttonContainer {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: 99999; /* High z-index to stay above canvas */
-        pointer-events: none; /* Allow clicks to pass through except for button */
+        z-index: 2147483647; /* Maximum z-index */
+        pointer-events: none;
       }
-      /* Button styles */
       #arButton {
         position: absolute;
         bottom: 20px;
@@ -44,22 +45,18 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        z-index: 100000; /* Higher than container */
+        z-index: 2147483647; /* Maximum z-index */
         opacity: 0.9;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        pointer-events: auto; /* Ensure button is clickable */
+        pointer-events: auto;
+        font-family: Arial, sans-serif;
       }
       #arButton:hover {
         background-color: #0056b3;
       }
-      /* Ensure canvas doesn't override button */
-      canvas {
-        z-index: 1 !important; /* Force canvas below button */
-      }
     </style>
   </head>
   <body>
-    <!-- Button container -->
     <div id="buttonContainer">
       <button id="arButton">Open Window</button>
     </div>
@@ -142,36 +139,11 @@
     </a-scene>
 
     <script>
-      // Ensure button remains visible and interactable
       document.addEventListener("DOMContentLoaded", () => {
         const button = document.getElementById("arButton");
-        button.style.display = "block";
-        button.style.visibility = "visible";
-        button.style.zIndex = "100000";
-
         button.addEventListener("click", () => {
           alert("Button clicked! Ready to add link functionality.");
         });
-
-        // Listen for MindAR initialization
-        const scene = document.querySelector("a-scene");
-        scene.addEventListener("arReady", () => {
-          button.style.display = "block";
-          button.style.visibility = "visible";
-          button.style.zIndex = "100000";
-        });
-
-        // Fallback: Periodically enforce button visibility
-        const ensureButtonVisibility = setInterval(() => {
-          if (button) {
-            button.style.display = "block";
-            button.style.visibility = "visible";
-            button.style.zIndex = "100000";
-          }
-        }, 500);
-
-        // Stop checking after 15 seconds to avoid unnecessary CPU usage
-        setTimeout(() => clearInterval(ensureButtonVisibility), 15000);
       });
     </script>
   </body>
