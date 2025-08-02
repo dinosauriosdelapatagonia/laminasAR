@@ -12,76 +12,45 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
+        overflow: visible;
       }
-      
-      /* El canvas de A-Frame */
       a-scene {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        z-index: 1 !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
       }
-      
-      /* Contenedor para la UI que siempre está encima */
-      .ui-overlay {
+      /* Botón con posicionamiento más fuerte */
+      #arButton {
         position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        z-index: 999999 !important;
-        pointer-events: none !important;
-        user-select: none !important;
-      }
-      
-      /* El botón específico */
-      .ar-button {
-        position: absolute !important;
-        bottom: 30px !important;
-        right: 30px !important;
-        padding: 12px 20px !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        padding: 15px 25px !important;
         font-size: 16px !important;
-        font-weight: bold !important;
-        background: linear-gradient(135deg, #007bff, #0056b3) !important;
+        background-color: #007bff !important;
         color: white !important;
         border: none !important;
-        border-radius: 25px !important;
+        border-radius: 5px !important;
         cursor: pointer !important;
-        z-index: 1000000 !important;
-        opacity: 0.95 !important;
-        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4) !important;
+        z-index: 999999 !important;
+        opacity: 0.9 !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+        display: block !important;
+        visibility: visible !important;
         pointer-events: auto !important;
-        user-select: none !important;
-        -webkit-tap-highlight-color: transparent !important;
-        transform: translateZ(0) !important;
-        will-change: transform !important;
-        min-width: 120px !important;
-        text-align: center !important;
+        transform: translate3d(0, 0, 0) !important;
       }
-      
-      .ar-button:active {
-        transform: scale(0.95) translateZ(0) !important;
-        background: linear-gradient(135deg, #0056b3, #004085) !important;
-      }
-      
-      .ar-button:hover {
-        opacity: 1 !important;
-        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.6) !important;
-      }
-      
-      /* Forzar que el canvas no capture eventos touch */
-      canvas {
-        pointer-events: none !important;
+      #arButton:hover {
+        background-color: #0056b3 !important;
       }
     </style>
   </head>
   <body>
-    
-    <!-- A-Frame Scene -->
+    <!-- Botón ANTES del a-scene -->
+    <button id="arButton">Open Window</button>
+
     <a-scene
       mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
       color-space="sRGB"
@@ -89,7 +58,6 @@
       embedded
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: true"
-      id="arScene"
     >
       <a-assets></a-assets>
 
@@ -160,81 +128,37 @@
       </a-entity>
     </a-scene>
 
-    <!-- UI Overlay - SIEMPRE encima del canvas -->
-    <div class="ui-overlay">
-      <button class="ar-button" id="infoButton">
-        📖 Info
-      </button>
-    </div>
-
     <script>
-      // Función para asegurar que el botón funcione
-      function initializeButton() {
-        const button = document.getElementById('infoButton');
+      // Script súper simple - solo forzar que el botón esté ahí
+      document.addEventListener("DOMContentLoaded", () => {
+        const button = document.getElementById("arButton");
         
-        if (button) {
-          // Remover cualquier event listener anterior
-          button.replaceWith(button.cloneNode(true));
-          const newButton = document.getElementById('infoButton');
+        // Event listener básico
+        button.addEventListener("click", () => {
+          alert("Button clicked! Ready to add link functionality.");
+        });
+
+        // Forzar visibilidad cada segundo durante 15 segundos
+        let attempts = 0;
+        const forceButton = setInterval(() => {
+          attempts++;
+          const btn = document.getElementById("arButton");
           
-          // Agregar el event listener
-          newButton.addEventListener('click', handleButtonClick, { passive: false });
-          newButton.addEventListener('touchend', handleButtonClick, { passive: false });
+          if (btn) {
+            btn.style.position = "fixed";
+            btn.style.bottom = "20px";
+            btn.style.right = "20px";
+            btn.style.zIndex = "999999";
+            btn.style.display = "block";
+            btn.style.visibility = "visible";
+            btn.style.opacity = "0.9";
+          }
           
-          console.log('Botón inicializado correctamente');
-        }
-      }
-      
-      // Función que maneja el click del botón
-      function handleButtonClick(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        
-        // Aquí puedes cambiar por tu URL objetivo
-        alert('¡Botón funcionando! Aquí irá la redirección.');
-        // window.location.href = 'tu-pagina-info.html';
-        
-        console.log('Botón clickeado exitosamente');
-      }
-      
-      // Inicializar cuando el DOM esté listo
-      document.addEventListener('DOMContentLoaded', initializeButton);
-      
-      // Reinicializar después de que A-Frame esté listo
-      document.querySelector('a-scene').addEventListener('loaded', function() {
-        setTimeout(initializeButton, 1000);
+          if (attempts >= 15) {
+            clearInterval(forceButton);
+          }
+        }, 1000);
       });
-      
-      // Hack adicional para Chrome Android
-      setTimeout(function() {
-        const canvas = document.querySelector('canvas');
-        if (canvas) {
-          canvas.style.pointerEvents = 'none';
-          canvas.style.touchAction = 'none';
-        }
-        initializeButton();
-      }, 2000);
-      
-      // Monitoreo constante durante los primeros 10 segundos
-      let checkCount = 0;
-      const maxChecks = 20;
-      const buttonCheck = setInterval(() => {
-        checkCount++;
-        const button = document.getElementById('infoButton');
-        
-        if (button && checkCount < maxChecks) {
-          // Reforzar estilos
-          button.style.position = 'absolute';
-          button.style.zIndex = '1000000';
-          button.style.pointerEvents = 'auto';
-          button.style.visibility = 'visible';
-          button.style.display = 'block';
-        }
-        
-        if (checkCount >= maxChecks) {
-          clearInterval(buttonCheck);
-        }
-      }, 500);
     </script>
   </body>
 </html>
