@@ -12,7 +12,7 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden;
+        overflow: visible; /* Prevent clipping */
       }
       a-scene {
         position: absolute;
@@ -20,10 +20,50 @@
         left: 0;
         width: 100vw;
         height: 100vh;
+        z-index: 1; /* Keep scene below button */
+      }
+      /* Container for button */
+      #buttonContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 99999; /* High z-index to stay above canvas */
+        pointer-events: none; /* Allow clicks to pass through except for button */
+      }
+      /* Button styles */
+      #arButton {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 100000; /* Higher than container */
+        opacity: 0.9;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        pointer-events: auto; /* Ensure button is clickable */
+      }
+      #arButton:hover {
+        background-color: #0056b3;
+      }
+      /* Ensure canvas doesn't override button */
+      canvas {
+        z-index: 1 !important; /* Force canvas below button */
       }
     </style>
   </head>
   <body>
+    <!-- Button container -->
+    <div id="buttonContainer">
+      <button id="arButton">Open Window</button>
+    </div>
+
     <a-scene
       mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
       color-space="sRGB"
@@ -99,7 +139,40 @@
       <a-entity mindar-image-target="targetIndex: 20; missTolerance: 0">
         <a-gltf-model src="model21.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
-
     </a-scene>
+
+    <script>
+      // Ensure button remains visible and interactable
+      document.addEventListener("DOMContentLoaded", () => {
+        const button = document.getElementById("arButton");
+        button.style.display = "block";
+        button.style.visibility = "visible";
+        button.style.zIndex = "100000";
+
+        button.addEventListener("click", () => {
+          alert("Button clicked! Ready to add link functionality.");
+        });
+
+        // Listen for MindAR initialization
+        const scene = document.querySelector("a-scene");
+        scene.addEventListener("arReady", () => {
+          button.style.display = "block";
+          button.style.visibility = "visible";
+          button.style.zIndex = "100000";
+        });
+
+        // Fallback: Periodically enforce button visibility
+        const ensureButtonVisibility = setInterval(() => {
+          if (button) {
+            button.style.display = "block";
+            button.style.visibility = "visible";
+            button.style.zIndex = "100000";
+          }
+        }, 500);
+
+        // Stop checking after 15 seconds to avoid unnecessary CPU usage
+        setTimeout(() => clearInterval(ensureButtonVisibility), 15000);
+      });
+    </script>
   </body>
 </html>
