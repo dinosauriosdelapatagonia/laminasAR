@@ -12,7 +12,7 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow: visible;
+        overflow: hidden;
       }
       a-scene {
         position: absolute;
@@ -20,37 +20,29 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        z-index: 1;
       }
-      /* Botón con posicionamiento más fuerte */
-      #arButton {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        padding: 15px 25px !important;
-        font-size: 16px !important;
-        background-color: #007bff !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 5px !important;
-        cursor: pointer !important;
-        z-index: 999999 !important;
-        opacity: 0.9 !important;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
-        display: block !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-        transform: translate3d(0, 0, 0) !important;
-      }
-      #arButton:hover {
-        background-color: #0056b3 !important;
+      /* SOLO agregando el botón - sin tocar nada más */
+      #infoButton {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 60px;
+        height: 60px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 24px;
+        z-index: 999999;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     </style>
   </head>
   <body>
-    <!-- Botón ANTES del a-scene -->
-    <button id="arButton">Open Window</button>
-
     <a-scene
       mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
       color-space="sRGB"
@@ -126,38 +118,32 @@
       <a-entity mindar-image-target="targetIndex: 20; missTolerance: 0">
         <a-gltf-model src="model21.glb" position="0 0.05 0" rotation="0 0 0" scale="0.9 0.9 0.9"></a-gltf-model>
       </a-entity>
+
     </a-scene>
 
-    <script>
-      // Script súper simple - solo forzar que el botón esté ahí
-      document.addEventListener("DOMContentLoaded", () => {
-        const button = document.getElementById("arButton");
-        
-        // Event listener básico
-        button.addEventListener("click", () => {
-          alert("Button clicked! Ready to add link functionality.");
-        });
+    <!-- SOLO agregando el botón al final -->
+    <button id="infoButton">ℹ️</button>
 
-        // Forzar visibilidad cada segundo durante 15 segundos
-        let attempts = 0;
-        const forceButton = setInterval(() => {
-          attempts++;
-          const btn = document.getElementById("arButton");
-          
+    <script>
+      // Esperar a que todo esté cargado, luego crear el botón
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const btn = document.getElementById('infoButton');
           if (btn) {
-            btn.style.position = "fixed";
-            btn.style.bottom = "20px";
-            btn.style.right = "20px";
-            btn.style.zIndex = "999999";
-            btn.style.display = "block";
-            btn.style.visibility = "visible";
-            btn.style.opacity = "0.9";
+            btn.onclick = function() {
+              alert('¡Botón funcionando! Listo para redireccionar.');
+            };
+            
+            // Forzar que esté siempre visible
+            setInterval(function() {
+              btn.style.position = 'fixed';
+              btn.style.bottom = '25px';
+              btn.style.right = '25px';
+              btn.style.zIndex = '999999';
+              btn.style.display = 'flex';
+            }, 2000);
           }
-          
-          if (attempts >= 15) {
-            clearInterval(forceButton);
-          }
-        }, 1000);
+        }, 3000);
       });
     </script>
   </body>
