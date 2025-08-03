@@ -5,18 +5,7 @@
     <title>3D Viewer - Model</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
     <style>
-      @font-face {
-        font-family: 'OxaniumRegular';
-        src: url('Oxanium-Regular.ttf') format('truetype');
-      }
-
-      @font-face {
-        font-family: 'OxaniumExtraLight';
-        src: url('Oxanium-ExtraLight.ttf') format('truetype');
-      }
-
       html, body {
         margin: 0;
         padding: 0;
@@ -55,33 +44,6 @@
       #close-btn:hover {
         background: rgba(255, 255, 255, 0.1);
       }
-
-      #gizmo-container {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 90;
-        width: 80px;
-        height: 80px;
-        pointer-events: none;
-        opacity: 0.8;
-      }
-
-      #angles {
-        position: fixed;
-        bottom: 10px;
-        right: 110px;
-        color: #515254;
-        font-size: 12px;
-        font-family: 'OxaniumRegular', sans-serif;
-        z-index: 90;
-        text-align: right;
-        line-height: 1.2em;
-      }
-
-      .degree {
-        font-family: 'OxaniumExtraLight', sans-serif;
-      }
     </style>
   </head>
   <body>
@@ -98,84 +60,25 @@
       exposure="1"
     ></model-viewer>
 
-    <canvas id="gizmo-container"></canvas>
-    <div id="angles">
-      X: <span class="degree">0°</span><br>
-      Y: <span class="degree">0°</span><br>
-      Z: <span class="degree">0°</span>
-    </div>
-
-    <audio id="start-sound" src="entra_cibernetico.wav"></audio>
     <audio id="close-sound" src="cierra_vent.wav"></audio>
 
     <script>
       const viewer = document.getElementById("viewer");
-      const sound = document.getElementById("start-sound");
       const closeSound = document.getElementById("close-sound");
-      const angleText = document.getElementById("angles");
-      const gizmoCanvas = document.getElementById("gizmo-container");
-      const ctx = gizmoCanvas.getContext("2d");
-      gizmoCanvas.width = 80;
-      gizmoCanvas.height = 80;
 
       function tryClose() {
         closeSound.play();
         setTimeout(() => {
           if (window.close) window.close();
           else alert("No se puede cerrar esta pestaña desde el navegador.");
-        }, 200); // slight delay to let the sound play
+        }, 200);
       }
 
       viewer.addEventListener("load", () => {
-        setTimeout(() => viewer.style.opacity = 1, 100);
-        sound.play().catch(() => {
-          // fallback if autoplay blocked, wait for user interaction
-          document.body.addEventListener("click", () => sound.play(), { once: true });
-        });
+        setTimeout(() => {
+          viewer.style.opacity = 1;
+        }, 100);
       });
-
-      function drawGizmo(xRot, yRot, zRot) {
-        ctx.clearRect(0, 0, 80, 80);
-        ctx.save();
-        ctx.translate(40, 40);
-
-        ctx.strokeStyle = "red";
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(20 * Math.cos(yRot), 20 * Math.sin(yRot));
-        ctx.stroke();
-
-        ctx.strokeStyle = "green";
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(20 * Math.cos(xRot), -20 * Math.sin(xRot));
-        ctx.stroke();
-
-        ctx.strokeStyle = "blue";
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-20 * Math.sin(zRot), 20 * Math.cos(zRot));
-        ctx.stroke();
-
-        ctx.restore();
-      }
-
-      function updateRotation() {
-        const rot = viewer.getCameraOrbit();
-        const x = (rot.phi * 180 / Math.PI).toFixed(0);
-        const y = (rot.theta * 180 / Math.PI).toFixed(0);
-        const z = 0;
-
-        angleText.innerHTML = `
-          X: <span class="degree">${x}°</span><br>
-          Y: <span class="degree">${y}°</span><br>
-          Z: <span class="degree">${z}°</span>
-        `;
-        drawGizmo(rot.phi, rot.theta, 0);
-        requestAnimationFrame(updateRotation);
-      }
-
-      requestAnimationFrame(updateRotation);
     </script>
   </body>
 </html>
