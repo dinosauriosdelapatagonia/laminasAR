@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Viewer - Model 1</title>
+    <title>3D Viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
@@ -43,26 +43,32 @@
         background: rgba(255, 255, 255, 0.1);
       }
 
-      #gizmo-container {
+      #gizmo {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 100;
-        color: white;
-        text-align: center;
-        font-size: 14px;
-      }
-
-      canvas#gizmo {
-        display: block;
-        margin: auto;
+        bottom: 12px;
+        right: 12px;
+        z-index: 99;
         width: 60px;
         height: 60px;
+      }
+
+      #angle-display {
+        position: fixed;
+        bottom: 6px;
+        right: 80px;
+        color: white;
+        font-size: 12px;
+        font-family: monospace;
+        z-index: 99;
       }
     </style>
   </head>
   <body>
-    <div id="close-btn" onclick="window.close()">✕</div>
+    <div id="close-btn" onclick="if (window.opener) window.close();">✕</div>
+
+    <!-- Optional: Rotation indicator and gizmo -->
+    <canvas id="gizmo"></canvas>
+    <div id="angle-display">0°</div>
 
     <model-viewer
       id="viewer"
@@ -76,55 +82,55 @@
     >
     </model-viewer>
 
-    <div id="gizmo-container">
-      <canvas id="gizmo"></canvas>
-      <div id="rotation-angle">0°</div>
-    </div>
-
-    <script type="module">
-      import * as THREE from 'https://cdn.skypack.dev/three@0.152.2';
-
+    <script>
       const viewer = document.getElementById('viewer');
-      const canvas = document.getElementById('gizmo');
-      const ctx = canvas.getContext('2d');
-      const angleDisplay = document.getElementById('rotation-angle');
+      const angleDisplay = document.getElementById('angle-display');
 
-      function drawGizmo(angle) {
+      viewer.addEventListener('camera-change', () => {
+        const orbit = viewer.getCameraOrbit();
+        const angleDeg = Math.round((orbit.theta * 180) / Math.PI);
+        angleDisplay.textContent = `${angleDeg}°`;
+        updateGizmo(orbit.theta, orbit.phi);
+      });
+
+      // Gizmo drawing
+      const canvas = document.getElementById("gizmo");
+      const ctx = canvas.getContext("2d");
+      canvas.width = 60;
+      canvas.height = 60;
+
+      function updateGizmo(theta, phi) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
-        const radius = 25;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Axis vectors
+        const x = Math.cos(theta) * 20;
+        const y = Math.sin(theta) * 20;
 
-        // Ejes
-        ctx.lineWidth = 2;
+        // Draw X (red)
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
-        ctx.lineTo(centerX, centerY - radius);
-        ctx.strokeStyle = 'red'; // Y
+        ctx.lineTo(centerX + x, centerY);
+        ctx.strokeStyle = "red";
         ctx.stroke();
 
+        // Draw Y (green)
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
-        ctx.lineTo(centerX + radius, centerY);
-        ctx.strokeStyle = 'green'; // X
+        ctx.lineTo(centerX, centerY - y);
+        ctx.strokeStyle = "lime";
         ctx.stroke();
 
+        // Z center point (white)
         ctx.beginPath();
-        ctx.arc(centerX, centerY, 3, 0, Math.PI * 2);
-        ctx.fillStyle = 'white'; // Z center
+        ctx.arc(centerX, centerY, 3, 0, 2 * Math.PI);
+        ctx.fillStyle = "white";
         ctx.fill();
       }
 
-      function updateGizmo() {
-        const cameraOrbit = viewer.getCameraOrbit();
-        const azimuthDeg = THREE.MathUtils.radToDeg(cameraOrbit.theta);
-        drawGizmo();
-        angleDisplay.textContent = `${azimuthDeg.toFixed(0)}°`;
-      }
-
-      viewer.addEventListener('camera-change', updateGizmo);
-      updateGizmo();
+      // Initialize
+      updateGizmo(0, 0);
     </script>
   </body>
 </html>
