@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>3D Viewer</title>
+    <title>3D Viewer - Model 1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
@@ -20,6 +20,8 @@
         width: 100vw;
         height: 100vh;
         background: transparent;
+        opacity: 0;
+        transition: opacity 1s ease;
       }
 
       #close-btn {
@@ -43,94 +45,108 @@
         background: rgba(255, 255, 255, 0.1);
       }
 
-      #gizmo {
+      #gizmo-container {
         position: fixed;
-        bottom: 12px;
-        right: 12px;
-        z-index: 99;
-        width: 60px;
-        height: 60px;
+        bottom: 20px;
+        right: 20px;
+        z-index: 90;
+        width: 80px;
+        height: 80px;
+        pointer-events: none;
+        opacity: 0.8;
       }
 
-      #angle-display {
+      #angles {
         position: fixed;
-        bottom: 6px;
-        right: 80px;
+        bottom: 10px;
+        right: 110px;
         color: white;
         font-size: 12px;
         font-family: monospace;
-        z-index: 99;
+        z-index: 90;
+        text-align: right;
       }
     </style>
   </head>
   <body>
-    <div id="close-btn" onclick="if (window.opener) window.close();">✕</div>
-
-    <!-- Optional: Rotation indicator and gizmo -->
-    <canvas id="gizmo"></canvas>
-    <div id="angle-display">0°</div>
+    <div id="close-btn" onclick="tryClose()">&#10005;</div>
 
     <model-viewer
       id="viewer"
       src="model1.glb"
       camera-controls
       auto-rotate
-      disable-pan="false"
+      disable-pan
       ar
       shadow-intensity="1"
       exposure="1"
-    >
-    </model-viewer>
+    ></model-viewer>
+
+    <canvas id="gizmo-container"></canvas>
+    <div id="angles">X: 0°<br>Y: 0°<br>Z: 0°</div>
+
+    <audio id="start-sound" src="aparece_cibernetico.mp3"></audio>
 
     <script>
-      const viewer = document.getElementById('viewer');
-      const angleDisplay = document.getElementById('angle-display');
-
-      viewer.addEventListener('camera-change', () => {
-        const orbit = viewer.getCameraOrbit();
-        const angleDeg = Math.round((orbit.theta * 180) / Math.PI);
-        angleDisplay.textContent = `${angleDeg}°`;
-        updateGizmo(orbit.theta, orbit.phi);
-      });
-
-      // Gizmo drawing
-      const canvas = document.getElementById("gizmo");
-      const ctx = canvas.getContext("2d");
-      canvas.width = 60;
-      canvas.height = 60;
-
-      function updateGizmo(theta, phi) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-
-        // Axis vectors
-        const x = Math.cos(theta) * 20;
-        const y = Math.sin(theta) * 20;
-
-        // Draw X (red)
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(centerX + x, centerY);
-        ctx.strokeStyle = "red";
-        ctx.stroke();
-
-        // Draw Y (green)
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(centerX, centerY - y);
-        ctx.strokeStyle = "lime";
-        ctx.stroke();
-
-        // Z center point (white)
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, 3, 0, 2 * Math.PI);
-        ctx.fillStyle = "white";
-        ctx.fill();
+      function tryClose() {
+        if (window.close) window.close();
+        else alert("No se puede cerrar esta pestaña desde el navegador.");
       }
 
-      // Initialize
-      updateGizmo(0, 0);
+      const viewer = document.getElementById("viewer");
+      const gizmoCanvas = document.getElementById("gizmo-container");
+      const angleText = document.getElementById("angles");
+      const sound = document.getElementById("start-sound");
+
+      viewer.addEventListener("load", () => {
+        viewer.style.opacity = 1;
+        sound.play();
+      });
+
+      const ctx = gizmoCanvas.getContext("2d");
+      gizmoCanvas.width = 80;
+      gizmoCanvas.height = 80;
+
+      function drawGizmo(xRot, yRot, zRot) {
+        ctx.clearRect(0, 0, 80, 80);
+
+        // Draw lines for X, Y, Z
+        ctx.save();
+        ctx.translate(40, 40);
+
+        ctx.strokeStyle = "red"; // X
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(20 * Math.cos(yRot), 20 * Math.sin(yRot));
+        ctx.stroke();
+
+        ctx.strokeStyle = "green"; // Y
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(20 * Math.cos(xRot), -20 * Math.sin(xRot));
+        ctx.stroke();
+
+        ctx.strokeStyle = "blue"; // Z
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-20 * Math.sin(zRot), 20 * Math.cos(zRot));
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      function updateRotation() {
+        const rot = viewer.getCameraOrbit();
+        const x = (rot.phi * 180 / Math.PI).toFixed(0);
+        const y = (rot.theta * 180 / Math.PI).toFixed(0);
+        const z = 0; // model-viewer does not expose Z directly
+
+        angleText.innerHTML = `X: ${x}°<br>Y: ${y}°<br>Z: ${z}°`;
+        drawGizmo(rot.phi, rot.theta, 0);
+        requestAnimationFrame(updateRotation);
+      }
+
+      requestAnimationFrame(updateRotation);
     </script>
   </body>
 </html>
