@@ -1,84 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>3D Viewer - Model</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(to bottom, #000000, #333333);
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        font-family: sans-serif;
-      }
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>©Patricio Paretti - Dinosaurios de la Patagonia - Viewer 1</title>
+<meta name="description" content="Modelo 3D interactivo de dinosaurio, parte del proyecto artístico de Patricio Paretti en Punta Arenas, Chile. Dinosaurios de la Patagonia.">
+<meta name="keywords" content="Patricio Paretti, Dinosaurios de la Patagonia, Punta Arenas, Chile, arte 3D, dinosaurio, modelo 3D, paleontología, arte digital">
+<style>
+  body {
+    margin: 0;
+    background-color: #333333;
+    overflow: hidden;
+  }
+  #container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+  }
+  model-viewer {
+    width: 100%;
+    height: 100%;
+  }
+  /* Logo superior izquierdo */
+  #logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 60px;
+    cursor: pointer;
+    z-index: 10;
+  }
+  /* Glosa inferior izquierda */
+  #glosa {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    font-size: 12px;
+    color: #808285;
+    font-family: sans-serif;
+    z-index: 10;
+  }
+  /* Logo inferior derecho */
+  #full3d {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    width: 40px;
+    z-index: 10;
+  }
+  /* Botón X cerrar */
+  #closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
 
-      model-viewer {
-        width: 100vw;
-        height: 100vh;
-        background: transparent;
-        opacity: 0;
-        transition: opacity 1s ease;
-      }
+<div id="container">
+  <!-- Botón cerrar -->
+  <button id="closeBtn">✕</button>
 
-      #close-btn {
-        position: fixed;
-        top: 12px;
-        right: 12px;
-        z-index: 100;
-        font-size: 28px;
-        color: white;
-        background: rgba(0, 0, 0, 0.6);
-        border: 1px solid white;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        text-align: center;
-        line-height: 40px;
-        cursor: pointer;
-      }
+  <!-- Logo superior izquierdo -->
+  <img id="logo" src="logodinos.png" alt="Proyecto Dinosaurios de la Patagonia">
 
-      #close-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-      }
-    </style>
-  </head>
-  <body>
-    <div id="close-btn" onclick="tryClose()">&#10005;</div>
+  <!-- Glosa inferior izquierda -->
+  <div id="glosa">©Patricio Paretti 2025</div>
 
-    <model-viewer
-      id="viewer"
-      src="model1.glb"
-      camera-controls
-      auto-rotate
-      disable-pan
-      ar
-      shadow-intensity="1"
-      exposure="1"
-    ></model-viewer>
+  <!-- Logo inferior derecho -->
+  <img id="full3d" src="full3Dicon.png" alt="Full 3D">
 
-    <audio id="close-sound" src="abrir_bt_viewer2.wav"></audio>
+  <!-- Visor de modelo -->
+  <model-viewer src="model1.glb" camera-controls auto-rotate background-color="#333333"></model-viewer>
+</div>
 
-    <script>
-      const viewer = document.getElementById("viewer");
-      const closeSound = document.getElementById("close-sound");
+<audio id="closeSound" src="cerrar_x.mp3"></audio>
+<audio id="logoSound" src="abrir_bt_FB.wav"></audio>
 
-      function tryClose() {
-        closeSound.play();
-        setTimeout(() => {
-          if (window.close) window.close();
-          else alert("No se puede cerrar esta pestaña desde el navegador.");
-        }, 200);
-      }
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.0.1/model-viewer.min.js"></script>
+<script>
+  // Botón cerrar
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    document.getElementById('closeSound').play();
+    setTimeout(() => window.close(), 300);
+  });
 
-      viewer.addEventListener("load", () => {
-        setTimeout(() => {
-          viewer.style.opacity = 1;
-        }, 100);
-      });
-    </script>
-  </body>
+  // Logo con enlace y sonido
+  document.getElementById('logo').addEventListener('click', () => {
+    document.getElementById('logoSound').play();
+    setTimeout(() => {
+      window.open('https://www.dinosauriosdelapatagonia.cl/', '_blank');
+    }, 300);
+  });
+</script>
+
+</body>
 </html>
