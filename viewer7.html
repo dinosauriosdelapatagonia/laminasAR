@@ -1,84 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>3D Viewer - Model 7</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(to bottom, #000000, #333333);
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        font-family: sans-serif;
-      }
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>©Patricio Paretti - Dinosaurios de la Patagonia - Viewer 7</title>
+<meta name="description" content="Modelo 3D interactivo de dinosaurio, parte del proyecto artístico de Patricio Paretti en Punta Arenas, Chile. Dinosaurios de la Patagonia.">
+<meta name="keywords" content="Patricio Paretti, Dinosaurios de la Patagonia, Punta Arenas, Chile, arte 3D, dinosaurio, modelo 3D, paleontología, arte digital">
 
-      model-viewer {
-        width: 100vw;
-        height: 100vh;
-        background: transparent;
-        opacity: 0;
-        transition: opacity 1s ease;
-      }
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #000000, #333333);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: sans-serif;
+  }
 
-      #close-btn {
-        position: fixed;
-        top: 12px;
-        right: 12px;
-        z-index: 100;
-        font-size: 28px;
-        color: white;
-        background: rgba(0, 0, 0, 0.6);
-        border: 1px solid white;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        text-align: center;
-        line-height: 40px;
-        cursor: pointer;
-      }
+  model-viewer {
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+    opacity: 1;
+  }
 
-      #close-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-      }
-    </style>
-  </head>
-  <body>
-    <div id="close-btn" onclick="tryClose()">&#10005;</div>
+  /* Botón cerrar */
+  #close-btn {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 100;
+    font-size: 28px;
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+  }
 
-    <model-viewer
-      id="viewer"
-      src="model7.glb"
-      camera-controls
-      auto-rotate
-      disable-pan
-      ar
-      shadow-intensity="1"
-      exposure="1"
-    ></model-viewer>
+  #close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
 
-    <audio id="close-sound" src="abrir_bt_viewer2.wav"></audio>
+  /* Logo superior izquierdo */
+  #logo {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 180px;
+    cursor: pointer;
+    z-index: 100;
+  }
 
-    <script>
-      const viewer = document.getElementById("viewer");
-      const closeSound = document.getElementById("close-sound");
+  /* Glosa inferior izquierda */
+  #glosa {
+    position: fixed;
+    bottom: 60px;
+    left: 10px;
+    font-size: 12px;
+    color: #808285;
+    font-family: sans-serif;
+    z-index: 100;
+  }
 
-      function tryClose() {
-        closeSound.play();
-        setTimeout(() => {
-          if (window.close) window.close();
-          else alert("No se puede cerrar esta pestaña desde el navegador.");
-        }, 200);
-      }
+  /* Logo inferior derecho */
+  #full3d {
+    position: fixed;
+    bottom: 60px;
+    right: 10px;
+    width: 80px;
+    z-index: 100;
+  }
+</style>
+</head>
+<body>
 
-      viewer.addEventListener("load", () => {
-        setTimeout(() => {
-          viewer.style.opacity = 1;
-        }, 100);
-      });
-    </script>
-  </body>
+<!-- Botón cerrar -->
+<div id="close-btn" onclick="tryClose()">&#10005;</div>
+
+<!-- Logo superior izquierdo -->
+<img id="logo" src="logodinos.png" alt="Proyecto Dinosaurios de la Patagonia">
+
+<!-- Glosa inferior izquierda -->
+<div id="glosa">©Patricio Paretti 2025</div>
+
+<!-- Logo inferior derecho -->
+<img id="full3d" src="full3Dicon.png" alt="Full 3D">
+
+<!-- Modelo 3D -->
+<model-viewer
+  id="viewer"
+  src="model7.glb"
+  camera-controls
+  auto-rotate
+  disable-pan
+  ar
+  shadow-intensity="1"
+  exposure="1"
+  background-color="transparent"
+></model-viewer>
+
+<audio id="close-sound" src="abrir_bt_viewer2.wav"></audio>
+<audio id="logo-sound" src="abrir_bt_FB.wav"></audio>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script>
+  function tryClose() {
+    document.getElementById('close-sound').play();
+    setTimeout(() => {
+      if (window.close) window.close();
+      else alert("No se puede cerrar esta pestaña desde el navegador.");
+    }, 300);
+  }
+
+  document.getElementById('logo').addEventListener('click', () => {
+    document.getElementById('logo-sound').play();
+    setTimeout(() => {
+      window.open('https://www.dinosauriosdelapatagonia.cl/', '_blank');
+    }, 300);
+  });
+</script>
+
+</body>
 </html>
